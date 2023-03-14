@@ -1,14 +1,10 @@
 import React from 'react';
 
-import { useSelector } from 'react-redux';
-
 import { ContactForm } from './ContactForm/ContactForm';
 import { ContactList } from './ContactList';
 import { Filter } from './Filter';
 
 export function App() {
-  const contacts = useSelector(state => state.phoneBook.contacts);
-
   return (
     <div
       style={{
