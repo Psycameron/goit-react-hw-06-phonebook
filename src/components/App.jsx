@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+
+import { useSelector, useDispatch } from 'react-redux';
+import { addContact, selectContacts } from 'redux/slice';
 
 import { ContactForm } from './ContactForm/ContactForm';
 import { ContactList } from './ContactList';
@@ -7,14 +10,17 @@ import { Filter } from './Filter';
 import { nanoid } from 'nanoid';
 
 export function App() {
-  const [filter, setFilter] = useState('');
-  const [contacts, setContacts] = useState(
-    () => JSON.parse(window.localStorage.getItem('my contacts')) ?? []
-  );
+  const contacts = useSelector(selectContacts);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    window.localStorage.setItem('my contacts', JSON.stringify(contacts));
-  }, [contacts]);
+  const [filter, setFilter] = useState('');
+  // const [contacts, setContacts] = useState(
+  //   () => JSON.parse(window.localStorage.getItem('my contacts')) ?? []
+  // );
+
+  // useEffect(() => {
+  //   window.localStorage.setItem('my contacts', JSON.stringify(contacts));
+  // }, [contacts]);
 
   const formSubmitHandler = ({ name, number }) => {
     const contact = {
@@ -29,28 +35,29 @@ export function App() {
       return alert(`${name} is already contacts`);
     }
 
-    setContacts(state => [...state, contact]);
+    dispatch(addContact());
+    // setContacts(state => [...state, contact]);
   };
 
   const filterChange = e => {
     setFilter(e.currentTarget.value);
   };
 
-  const getVisibleContacts = () => {
-    const normalizedFilter = filter.toLowerCase();
+  // const getVisibleContacts = () => {
+  //   const normalizedFilter = filter.toLowerCase();
 
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(normalizedFilter)
-    );
-  };
+  //   return contacts.filter(contact =>
+  //     contact.name.toLowerCase().includes(normalizedFilter)
+  //   );
+  // };
 
-  const deleteContact = contactId => {
-    setContacts(prevContacts =>
-      prevContacts.filter(contact => contact.id !== contactId)
-    );
-  };
+  // const deleteContact = contactId => {
+  //   setContacts(prevContacts =>
+  //     prevContacts.filter(contact => contact.id !== contactId)
+  //   );
+  // };
 
-  const visibleContacts = getVisibleContacts();
+  // const visibleContacts = getVisibleContacts();
 
   return (
     <div
@@ -74,8 +81,8 @@ export function App() {
         <p>Добавьте свой первый контакт</p>
       ) : (
         <ContactList
-          contacts={visibleContacts}
-          onDeleteContact={deleteContact}
+        // contacts={visibleContacts}
+        // onDeleteContact={deleteContact}
         />
       )}
     </div>

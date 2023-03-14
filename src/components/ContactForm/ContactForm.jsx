@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { addContact, selectContacts } from 'redux/slice';
+
+import { nanoid } from 'nanoid';
 
 import css from './ContactForm.module.css';
 
 export function ContactForm({ onSubmit }) {
+  const contacts = useSelector(selectContacts);
+  const dispatch = useDispatch();
+
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
@@ -25,7 +32,21 @@ export function ContactForm({ onSubmit }) {
 
   const handleSubmit = e => {
     e.preventDefault();
-    onSubmit({ name, number });
+
+    const contact = {
+      id: nanoid(),
+      name,
+      number,
+    };
+
+    const contactNamesList = contacts.map(contact => contact.name);
+
+    if (contactNamesList.includes(name)) {
+      return alert(`${name} is already contacts`);
+    }
+
+    dispatch(addContact());
+    // onSubmit({ name, number });
     reset();
   };
 
