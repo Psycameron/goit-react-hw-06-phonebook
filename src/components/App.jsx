@@ -1,63 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-import { useSelector, useDispatch } from 'react-redux';
-import { addContact, selectContacts } from 'redux/slice';
+import { useSelector } from 'react-redux';
 
 import { ContactForm } from './ContactForm/ContactForm';
 import { ContactList } from './ContactList';
 import { Filter } from './Filter';
 
-import { nanoid } from 'nanoid';
-
 export function App() {
-  const contacts = useSelector(selectContacts);
-  const dispatch = useDispatch();
-
-  const [filter, setFilter] = useState('');
-  // const [contacts, setContacts] = useState(
-  //   () => JSON.parse(window.localStorage.getItem('my contacts')) ?? []
-  // );
-
-  // useEffect(() => {
-  //   window.localStorage.setItem('my contacts', JSON.stringify(contacts));
-  // }, [contacts]);
-
-  const formSubmitHandler = ({ name, number }) => {
-    const contact = {
-      id: nanoid(),
-      name,
-      number,
-    };
-
-    const contactNamesList = contacts.map(contact => contact.name);
-
-    if (contactNamesList.includes(name)) {
-      return alert(`${name} is already contacts`);
-    }
-
-    dispatch(addContact());
-    // setContacts(state => [...state, contact]);
-  };
-
-  const filterChange = e => {
-    setFilter(e.currentTarget.value);
-  };
-
-  // const getVisibleContacts = () => {
-  //   const normalizedFilter = filter.toLowerCase();
-
-  //   return contacts.filter(contact =>
-  //     contact.name.toLowerCase().includes(normalizedFilter)
-  //   );
-  // };
-
-  // const deleteContact = contactId => {
-  //   setContacts(prevContacts =>
-  //     prevContacts.filter(contact => contact.id !== contactId)
-  //   );
-  // };
-
-  // const visibleContacts = getVisibleContacts();
+  const contacts = useSelector(state => state.phoneBook.contacts);
 
   return (
     <div
@@ -72,19 +22,9 @@ export function App() {
         color: '#010101',
       }}
     >
-      <h1>Phonebook</h1>
-      <ContactForm onSubmit={formSubmitHandler} />
-
-      <h2>Contacts</h2>
-      <Filter value={filter} onChange={filterChange} />
-      {contacts.length < 1 ? (
-        <p>Добавьте свой первый контакт</p>
-      ) : (
-        <ContactList
-        // contacts={visibleContacts}
-        // onDeleteContact={deleteContact}
-        />
-      )}
+      <ContactForm />
+      <Filter />
+      <ContactList />
     </div>
   );
 }
