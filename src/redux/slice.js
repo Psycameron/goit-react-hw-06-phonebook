@@ -1,4 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
 const initialState = {
   contacts: [
@@ -11,7 +13,7 @@ const initialState = {
   filter: '',
 };
 
-export const phoneBookSlice = createSlice({
+const phoneBookSlice = createSlice({
   name: 'contacts',
   initialState,
   reducers: {
@@ -25,21 +27,27 @@ export const phoneBookSlice = createSlice({
       );
       state.contacts.splice(index, 1);
     },
-  },
-});
 
-export const filterSlice = createSlice({
-  name: 'filter',
-  initialState,
-  reducers: {
     onFilter(state, action) {
-      return (state = action.payload);
+      state.filter = action.payload;
     },
   },
 });
 
-export const selectContacts = state => state.phoneBook.contacts;
-export const selectFilter = state => state.phoneBook.filter;
+const persistConfig = {
+  key: 'contacts',
+  storage,
+  whitelist: ['contacts'],
+};
 
-export const { addContact, deleteContact } = phoneBookSlice.actions;
-export const { filter } = filterSlice.actions;
+export const persistPhoneBookReducer = persistReducer(
+  persistConfig,
+  phoneBookSlice.reducer
+);
+
+export const { addContact, deleteContact, onFilter } = phoneBookSlice.actions;
+
+// Selectors
+
+export const getContacts = state => state.phoneBook.contacts;
+export const getFilteredContacts = state => state.phoneBook.filter;
